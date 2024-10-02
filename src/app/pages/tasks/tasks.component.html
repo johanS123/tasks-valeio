@@ -1,17 +1,26 @@
 <div class="container">
   <h2 class="title">Tareas</h2>
   <div class="row">
-    <div class="col s12 l12">
-      <div class="input-field col s12 l8">
+    <div class="col s12 l6">
+      <div class="input-field col s12 l12">
         <input
-          placeholder="tarea ó persona"
+          placeholder="tarea"
           id="filter"
           type="text"
           class="validate"
+          [(ngModel)]="filterTask"
         />
         <label for="filter">Buscar</label>
       </div>
-      <div class="col s6 l4 offset-s6">
+      <div class="input-field col s12 l6">
+        <select [(ngModel)]="filterStatus">
+          <option value="" selected>Todos</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="completado">Completado</option>
+        </select>
+        <label>Estado</label>
+      </div>
+      <div class="col s6 l6 offset-s6">
         <button
           class="waves-effect waves-light btn create-btn"
           (click)="openModal()"
@@ -21,11 +30,13 @@
       </div>
     </div>
   </div>
-</div>
-
-<div>
-  <!-- posible componente -->
-  <app-task-list *ngFor="let item of tasks" [task]="item"></app-task-list>
+  <div class="row">
+    <!-- posible componente -->
+    <app-task-list
+      *ngFor="let item of tasks | filter : filterTask : filterStatus"
+      [task]="item"
+    ></app-task-list>
+  </div>
 </div>
 <!-- modal de creacion de tarea -->
-<app-task-create-modal></app-task-create-modal>
+<app-task-create-modal (isSaved)="isSaved($event)"></app-task-create-modal>

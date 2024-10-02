@@ -17,7 +17,10 @@
           />
           <label for="title">Nombre de la tarea</label>
         </div>
-        <div *ngIf="form.get('title')?.invalid && form.get('title')?.touched">
+        <div
+          class="msg-error"
+          *ngIf="form.get('title')?.invalid && form.get('title')?.touched"
+        >
           <small>El nombre es requerido.</small>
         </div>
         <div class="input-field">
@@ -27,10 +30,12 @@
             name="deadline"
             formControlName="deadline"
             class="datepicker"
+            readonly
           />
           <label for="deadline">Fecha limite</label>
         </div>
         <div
+          class="msg-error"
           *ngIf="form.get('deadline')?.invalid && form.get('deadline')?.touched"
         >
           <small>La fecha límite es requerida.</small>
@@ -53,6 +58,7 @@
             <label for="name">Persona {{ personIndex + 1 }} Asociada</label>
           </div>
           <div
+            class="msg-error"
             *ngIf="person.get('name')?.invalid && person.get('name')?.touched"
           >
             <small>El nombre de la persona es requerido.</small>
@@ -63,7 +69,10 @@
             <input type="number" formControlName="age" placeholder="Edad" />
             <label for="age">Edad</label>
           </div>
-          <div *ngIf="person.get('age')?.invalid && person.get('age')?.touched">
+          <div
+            class="msg-error"
+            *ngIf="person.get('age')?.invalid && person.get('age')?.touched"
+          >
             <small
               >La edad es requerida y debe ser un número entre 18 y 80.</small
             >
@@ -72,57 +81,91 @@
           <!-- Habilidades de cada persona -->
           <div formArrayName="skills">
             <div
+              class="row"
               *ngFor="
                 let skill of skills(personIndex).controls;
                 let skillIndex = index
               "
             >
-              <input [formControlName]="skillIndex" placeholder="Habilidad" />
-              <button
-                type="button"
-                (click)="removeSkill(personIndex, skillIndex)"
-              >
-                Eliminar Habilidad
-              </button>
+              <div class="input-field col l6 s12">
+                <input
+                  type="text"
+                  [formControlName]="skillIndex"
+                  placeholder="Habilidad"
+                />
+              </div>
+              <div class="col l4">
+                <button
+                  class="red darken-2 btn"
+                  type="button"
+                  (click)="removeSkill(personIndex, skillIndex)"
+                >
+                  Quitar
+                  <i class="material-icons right">delete</i>
+                </button>
+              </div>
             </div>
-            <button type="button" (click)="addSkill(personIndex)">
-              Añadir Habilidad
-            </button>
-            <!-- Validación personalizada para el array de habilidades -->
-            <div
-              *ngIf="skills(personIndex).invalid && skills(personIndex).touched"
-            >
-              <small>Cada persona debe tener al menos una habilidad.</small>
+            <div class="row">
+              <div class="col s12 right-align">
+                <button
+                  class="blue accent-2 btn"
+                  type="button"
+                  (click)="addSkill(personIndex)"
+                >
+                  Agregar
+                  <i class="material-icons right">add</i>
+                </button>
+              </div>
             </div>
           </div>
 
           <!-- Botón para eliminar persona -->
-          <button type="button" (click)="removePerson(personIndex)">
-            Eliminar Persona
-          </button>
+          <div class="row">
+            <div class="col s12 right-align">
+              <button
+                class="red darken-2 btn"
+                type="button"
+                (click)="removePerson(personIndex)"
+              >
+                Quitar
+                <i class="material-icons right">delete</i>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Botón para añadir persona -->
-      <button
-        type="button"
-        class="waves-effect waves-light btn"
-        (click)="addPerson()"
-      >
-        Añadir Persona
-      </button>
+      <div class="row">
+        <div class="col s12 right-align">
+          <button type="button" class="blue accent-2 btn" (click)="addPerson()">
+            Añadir
+            <i class="material-icons right">person_add</i>
+          </button>
+        </div>
+      </div>
 
-      <button
-        class="waves-effect waves-light btn"
-        [disabled]="validateSendForm()"
-        type="submit"
-      >
-        Enviar
-        <i class="material-icons right">send</i>
-      </button>
+      <div class="row">
+        <div class="col s12 right-align">
+          <button
+            class="waves-effect waves-light btn"
+            [disabled]="validateSendForm()"
+            type="submit"
+          >
+            Enviar
+            <i class="material-icons right">send</i>
+          </button>
+        </div>
+      </div>
     </form>
   </div>
   <div class="modal-footer">
-    <button class="modal-close btn" (click)="closeModal()">Cerrar</button>
+    <button
+      class="modal-close grey darken-2 btn"
+      (click)="closeModal()"
+      #closeBtn
+    >
+      Cerrar
+    </button>
   </div>
 </div>

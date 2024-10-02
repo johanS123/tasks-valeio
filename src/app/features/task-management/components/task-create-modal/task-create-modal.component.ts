@@ -1,5 +1,12 @@
 import { DatePipe } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -8,8 +15,9 @@ import {
   Validators,
 } from '@angular/forms';
 import ITasks from 'src/app/models/tasks.model';
-import { minOneSkill } from 'src/app/validators/min-one-skill.validator';
+import { minOneRecord } from 'src/app/core/validators/min-one-record.validator';
 import { TaskService } from '../../services/task.service';
+import { AlertsService } from '../../../../core/services/alerts.service';
 
 declare var M: any; // Declarar M para acceder a los métodos de Materialize
 
@@ -20,14 +28,16 @@ declare var M: any; // Declarar M para acceder a los métodos de Materialize
   providers: [DatePipe],
 })
 export class TaskCreateModalComponent implements AfterViewInit {
-  @ViewChild('skillsInput') skillsInput!: ElementRef;
+  @ViewChild('closeBtn') closeBtn!: ElementRef;
+  @Output('isSaved') isSaved = new EventEmitter<boolean>();
 
   form!: FormGroup;
 
   constructor(
     private fb: FormBuilder,
     private datePipe: DatePipe,
-    private taskService: TaskService
+    private taskService: TaskService,
+    private alertsService: AlertsService
   ) {
     this.formBuilder();
   }
@@ -98,7 +108,7 @@ export class TaskCreateModalComponent implements AfterViewInit {
     this.form = this.fb.group({
       title: ['', [Validators.required]],
       deadline: ['', [Validators.required]],
-      persons: this.fb.array([]),
+      persons: this.fb.array([], minOneRecord),
     });
 
     // Añadir una persona por defecto al inicializar
@@ -115,9 +125,9 @@ export class TaskCreateModalComponent implements AfterViewInit {
 
   addPerson(): void {
     const personForm = this.fb.group({
-      name: ['', Validators.required],
+      name: ['', [Validators.required, Validators.minLength(5)]],
       age: ['', [Validators.required, Validators.min(18), Validators.max(80)]],
-      skills: this.fb.array([], minOneSkill),
+      skills: this.fb.array([], minOneRecord),
     });
 
     this.persons.push(personForm);
@@ -137,20 +147,8 @@ export class TaskCreateModalComponent implements AfterViewInit {
   }
 
   clearForm() {
-    this.form.patchValue({
-      title: '',
-      deadline: '',
-    });
-  }
-
-  removeChip(chip: string): void {
-    const chipsArray = this.form.get('skills')?.value;
-    const index = chipsArray.indexOf(chip);
-
-    if (index >= 0) {
-      chipsArray.splice(index, 1);
-      this.form.get('skills')?.setValue(chipsArray);
-    }
+    this.form.reset();
+    this.persons.clear();
   }
 
   validateSendForm(): boolean | undefined {
@@ -175,7 +173,26 @@ export class TaskCreateModalComponent implements AfterViewInit {
     let body: ITasks = rest;
     body.deadline = dateFormated == null ? '' : dateFormated;
 
-    this.taskService.addTask(body).subscribe((res) => console.log('res', res));
+    this.taskService.addTask(body).subscribe(
+      (res: any) => {
+        if (res.status == 201) {
+          this.isSaved.emit(true);
+          this.closeBtn.nativeElement.click();
+          this.alertsService.showAlert(
+            'Tarea Creada',
+            'la tarea se creo exitosamente!!.'
+          );
+        }
+      },
+      (err) => {
+        this.alertsService.showAlert(
+          'Error de Creación',
+          'la tarea no se pudo crear, intente mas tarde!!'
+        );
+        this.isSaved.emit(false);
+        console.error('Error: ', err);
+      }
+    );
   }
 
   closeModal() {

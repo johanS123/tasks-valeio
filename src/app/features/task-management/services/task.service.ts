@@ -17,4 +17,8 @@ export class TaskService {
   addTask(body: ITasks) {
     return this.http.post(`${dominio}/api/tasks`, body);
   }
+
+  updateTask(body: ITasks, id: number) {
+    return this.http.put(`${dominio}/api/tasks/${id}`, body);
+  }
 }

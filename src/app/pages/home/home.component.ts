@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import Ipage from '../../models/page.model';
+import { CardComponent } from 'src/app/shared/components/card/card.component';
+import { NgFor } from '@angular/common';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.sass'],
+  standalone: true,
+  imports: [CardComponent, NgFor],
 })
 export class HomeComponent implements OnInit {
   pages: Ipage[] = [];

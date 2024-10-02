@@ -9,4 +9,19 @@ import ITasks from 'src/app/models/tasks.model';
 })
 export class TaskListComponent {
   @Input({ required: false }) task!: ITasks;
+  isChecked: boolean = false;
+
+  constructor(private taskService: TaskService) {}
+
+  onCheckboxChange(event: any, item: ITasks) {
+    this.isChecked = event.target.checked;
+    item.isCompleted = this.isChecked;
+    this.saveCheckboxState(this.isChecked, item);
+  }
+
+  saveCheckboxState(state: boolean, item: ITasks) {
+    this.taskService
+      .updateTask(item, item.id)
+      .subscribe((res) => console.log(res));
+  }
 }

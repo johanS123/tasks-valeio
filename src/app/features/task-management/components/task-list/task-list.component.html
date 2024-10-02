@@ -1,13 +1,34 @@
-<div class="container">
+<div class="contain-list">
   <div class="card-content">
-    <article>
-      <strong>{{ task.id }}</strong>
-      <input type="checkbox" />
-      <span>{{ task.title }}</span>
-    </article>
-    <article>
-      <h2></h2>
-      <div id="users"></div>
-    </article>
+    <div class="info-task">
+      <strong
+        style="padding-right: 10px; font-size: 1.5rem; font-weight: 800"
+        >{{ task.id }}</strong
+      >
+      <label>
+        <input
+          type="checkbox"
+          class="filled-in"
+          [checked]="isChecked"
+          [(ngModel)]="task.isCompleted"
+          (change)="onCheckboxChange($event, task)"
+        />
+        <span class="title">{{ task.title }} - {{ task.deadline }}</span>
+      </label>
+    </div>
+    <div class="info-persons">
+      <span class="title">Personas Asociadas:</span>
+      <div id="persons">
+        <ul *ngFor="let person of task.persons">
+          <li>
+            {{ person.name }} <span class="age">({{ person.age }})</span>
+            <div class="skills">
+              <span>Habilidades: </span>
+              {{ person.skills.toString() }}
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </div>
