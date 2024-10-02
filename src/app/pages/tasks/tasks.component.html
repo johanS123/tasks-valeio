@@ -1,1 +1,31 @@
-<p>tasks works!</p>
+<div class="container">
+  <h2 class="title">Tareas</h2>
+  <div class="row">
+    <div class="col s12 l12">
+      <div class="input-field col s12 l8">
+        <input
+          placeholder="tarea ó persona"
+          id="filter"
+          type="text"
+          class="validate"
+        />
+        <label for="filter">Buscar</label>
+      </div>
+      <div class="col s6 l4 offset-s6">
+        <button
+          class="waves-effect waves-light btn create-btn"
+          (click)="openModal()"
+        >
+          Agregar tarea
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <!-- posible componente -->
+  <app-task-list *ngFor="let item of tasks" [task]="item"></app-task-list>
+</div>
+<!-- modal de creacion de tarea -->
+<app-task-create-modal></app-task-create-modal>

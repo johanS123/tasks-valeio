@@ -1,0 +1,128 @@
+<div id="modal1" class="modal">
+  <div class="modal-content">
+    <h4>Crear Nueva Tarea</h4>
+    <form
+      [formGroup]="form"
+      (ngSubmit)="createTask()"
+      (keydown.enter)="$event.preventDefault()"
+    >
+      <div class="row">
+        <div class="input-field">
+          <input
+            type="text"
+            id="title"
+            name="title"
+            formControlName="title"
+            placeholder="Nombre de la tarea"
+          />
+          <label for="title">Nombre de la tarea</label>
+        </div>
+        <div *ngIf="form.get('title')?.invalid && form.get('title')?.touched">
+          <small>El nombre es requerido.</small>
+        </div>
+        <div class="input-field">
+          <input
+            type="text"
+            id="deadline"
+            name="deadline"
+            formControlName="deadline"
+            class="datepicker"
+          />
+          <label for="deadline">Fecha limite</label>
+        </div>
+        <div
+          *ngIf="form.get('deadline')?.invalid && form.get('deadline')?.touched"
+        >
+          <small>La fecha límite es requerida.</small>
+        </div>
+      </div>
+
+      <!-- personas asociadas -->
+      <div formArrayName="persons">
+        <div
+          *ngFor="let person of persons.controls; let personIndex = index"
+          [formGroupName]="personIndex"
+        >
+          <!-- Nombre de la persona -->
+          <div class="input-field">
+            <input
+              type="text"
+              formControlName="name"
+              placeholder="Nombre de la persona"
+            />
+            <label for="name">Persona {{ personIndex + 1 }} Asociada</label>
+          </div>
+          <div
+            *ngIf="person.get('name')?.invalid && person.get('name')?.touched"
+          >
+            <small>El nombre de la persona es requerido.</small>
+          </div>
+
+          <!-- Edad de la persona -->
+          <div class="input-field">
+            <input type="number" formControlName="age" placeholder="Edad" />
+            <label for="age">Edad</label>
+          </div>
+          <div *ngIf="person.get('age')?.invalid && person.get('age')?.touched">
+            <small
+              >La edad es requerida y debe ser un número entre 18 y 80.</small
+            >
+          </div>
+
+          <!-- Habilidades de cada persona -->
+          <div formArrayName="skills">
+            <div
+              *ngFor="
+                let skill of skills(personIndex).controls;
+                let skillIndex = index
+              "
+            >
+              <input [formControlName]="skillIndex" placeholder="Habilidad" />
+              <button
+                type="button"
+                (click)="removeSkill(personIndex, skillIndex)"
+              >
+                Eliminar Habilidad
+              </button>
+            </div>
+            <button type="button" (click)="addSkill(personIndex)">
+              Añadir Habilidad
+            </button>
+            <!-- Validación personalizada para el array de habilidades -->
+            <div
+              *ngIf="skills(personIndex).invalid && skills(personIndex).touched"
+            >
+              <small>Cada persona debe tener al menos una habilidad.</small>
+            </div>
+          </div>
+
+          <!-- Botón para eliminar persona -->
+          <button type="button" (click)="removePerson(personIndex)">
+            Eliminar Persona
+          </button>
+        </div>
+      </div>
+
+      <!-- Botón para añadir persona -->
+      <button
+        type="button"
+        class="waves-effect waves-light btn"
+        (click)="addPerson()"
+      >
+        Añadir Persona
+      </button>
+
+      <button
+        class="waves-effect waves-light btn"
+        [disabled]="validateSendForm()"
+        type="submit"
+      >
+        Enviar
+        <i class="material-icons right">send</i>
+      </button>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="modal-close btn" (click)="closeModal()">Cerrar</button>
+  </div>
+</div>

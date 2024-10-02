@@ -8,6 +8,10 @@ import { FooterComponent } from './layouts/footer/footer.component';
 import { HomeComponent } from './pages/home/home.component';
 import { CardComponent } from './shared/components/card/card.component';
 import { TasksComponent } from './pages/tasks/tasks.component';
+import { UsersComponent } from './pages/users/users.component';
+import { TaskManagementModule } from './features/task-management/task-management.module';
+import { TaskCreateModalComponent } from './features/task-management/components/task-create-modal/task-create-modal.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -16,13 +20,17 @@ import { TasksComponent } from './pages/tasks/tasks.component';
     FooterComponent,
     HomeComponent,
     CardComponent,
-    TasksComponent
+    TasksComponent,
+    UsersComponent,
+    TaskCreateModalComponent,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    TaskManagementModule,
+    ReactiveFormsModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
