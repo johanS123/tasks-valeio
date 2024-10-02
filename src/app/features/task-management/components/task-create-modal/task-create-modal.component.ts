@@ -18,6 +18,7 @@ import ITasks from 'src/app/models/tasks.model';
 import { minOneRecord } from 'src/app/core/validators/min-one-record.validator';
 import { TaskService } from '../../services/task.service';
 import { AlertsService } from '../../../../core/services/alerts.service';
+import { noDuplicadosValidator } from 'src/app/core/validators/no-duplicados.validator';
 
 declare var M: any; // Declarar M para acceder a los métodos de Materialize
 
@@ -125,7 +126,10 @@ export class TaskCreateModalComponent implements AfterViewInit {
 
   addPerson(): void {
     const personForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(5)]],
+      name: [
+        '',
+        [Validators.required, Validators.minLength(5), noDuplicadosValidator],
+      ],
       age: ['', [Validators.required, Validators.min(18), Validators.max(80)]],
       skills: this.fb.array([], minOneRecord),
     });
@@ -138,7 +142,10 @@ export class TaskCreateModalComponent implements AfterViewInit {
   }
 
   addSkill(personIndex: number): void {
-    const skillControl = new FormControl('', Validators.required);
+    const skillControl = new FormControl('', [
+      Validators.required,
+      Validators.pattern(/^(?!\s).*/),
+    ]);
     this.skills(personIndex).push(skillControl);
   }
 
@@ -197,5 +204,14 @@ export class TaskCreateModalComponent implements AfterViewInit {
 
   closeModal() {
     this.clearForm();
+  }
+
+  // Método para obtener errores
+  obtenerErrores(personIndex: number): string {
+    const errores = this.form.get('persons')?.errors;
+    if (errores && errores[personIndex].duplicados) {
+      return 'Hay valores duplicados en el formulario.';
+    }
+    return '';
   }
 }

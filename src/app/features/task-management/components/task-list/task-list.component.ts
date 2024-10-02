@@ -16,10 +16,10 @@ export class TaskListComponent {
   onCheckboxChange(event: any, item: ITasks) {
     this.isChecked = event.target.checked;
     item.isCompleted = this.isChecked;
-    this.saveCheckboxState(this.isChecked, item);
+    this.saveCheckboxState(item);
   }
 
-  saveCheckboxState(state: boolean, item: ITasks) {
+  saveCheckboxState(item: ITasks) {
     this.taskService
       .updateTask(item, item.id)
       .subscribe((res) => console.log(res));

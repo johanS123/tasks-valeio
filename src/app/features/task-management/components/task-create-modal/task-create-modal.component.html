@@ -132,6 +132,9 @@
               </button>
             </div>
           </div>
+          <div *ngIf="obtenerErrores(personIndex)">
+            {{ obtenerErrores(personIndex) }}
+          </div>
         </div>
       </div>
 
